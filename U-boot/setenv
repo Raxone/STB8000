@@ -1,7 +1,5 @@
- 
- 
- 
-  setenv update_kernel "tftp $load_addr uImage; nand erase nand0,0; nand write.jffs2 $load_addr nand0,0"
+
+        setenv update_kernel "tftp $load_addr uImage; nand erase nand0,0; nand write.jffs2 $load_addr nand0,0"
 	setenv update_rootfs "tftp $load_addr rootfs.img; nand erase nand0,1 ; nand write $load_addr nand0,1 0x4400000"
 	setenv update_all "run update_kernel; run update_rootfs"
 	setenv bootargs "console=ttyAS0,115200 root=/dev/mtdblock1 rw rootfstype=jffs2 init=/bin/devinit nwhwconf=device:eth0,hwaddr:$ethaddr ip=$ipaddr:$serverip:$gatewayip:$netmask:Enigma2:eth0:off coprocessor_mem=4m@0x40000000,4m@0x40400000 bigphysarea=6144"
