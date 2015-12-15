@@ -1,0 +1,2 @@
+Patched for STB8000(Sti7105) arch/sh/boards/mach-hdk7105/setup.c.
+Patched audio for spdif from esi88 patch.
