@@ -1,0 +1,12 @@
+Format usb in fat32 format and copy rootfs.img and uImage on usb and put usb in STB.
+
+If use old u-boot mtdparts is wrong you need change setenv.
+
+PDK7105>setenv update_kernel_usb "usb start; fatload usb 0:1 $load_addr uImage; nand erase 0x0 0x800000; nand write.jffs2 $load_addr 0x0 0x300000"
+PDK7105>setenv update_rootfs_usb "usb start; fatload usb 0:1 $load_addr rootfs.img; nand erase 0x800000 0x4400000; nand write $load_addr 0x800000 0x4400000"
+PDK7105>setenv update_all_usb "run update_kernel_usb; run update_rootfs_usb"
+PDK7105>setenv bootargs "console=ttyAS0,115200 root=/dev/mtdblock1 rw rootfstype=jffs2 init=/bin/devinit nwhwconf=device:eth0,hwaddr:$ethaddr ip=$ipaddr:$serverip:$gatewayip:$netmask:Enigma2:eth0:off coprocessor_mem=4m@0x40000000,4m@0x40400000 bigphysarea=6144"
+PDK7105>setenv bootcmd "nand read $load_addr 0x0 0x300000; bootm $load_addr"
+PDK7105>save
+PDK7105>run update_all_usb
+PDK7105>reset
