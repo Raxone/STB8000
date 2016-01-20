@@ -239,9 +239,9 @@ static struct platform_device hdk7105_leds = {
 static int hdk7105_phy_reset(void *bus)
 {
 	gpio_set_value(HDK7105_PIO_PHY_RESET, 0);
-	mdelay(100);
+	udelay(1000);
 	gpio_set_value(HDK7105_PIO_PHY_RESET, 1);
-
+	udelay(1000);
 	return 1;
 }
 
