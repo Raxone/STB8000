@@ -35,7 +35,7 @@
 #include <linux/stm/pio.h>
 
 #define HDK7105_PIO_PHY_RESET stm_gpio(15, 5)
-//#define HDK7105_GPIO_FLASH_WP stm_gpio(1, 2)
+#define HDK7105_GPIO_FLASH_WP stm_gpio(1, 2)
 
 const char *LMI_IO_partalias[] = { "v4l2-coded-video-buffers", "BPA2_Region1", "v4l2-video-buffers" ,
                                    "coredisplay-video", "gfx-memory", "BPA2_Region0", "LMI_VID", NULL };
@@ -249,9 +249,37 @@ static struct stmmac_mdio_bus_data stmmac_mdio_bus = {
 	.bus_id = 0,
 	.phy_reset = hdk7105_phy_reset,
 	.phy_mask = 0,
-	.probed_phy_irq = ILC_EXT_IRQ(6),
 };
 
+/* NOR Flash */
+static struct platform_device hdk7105_nor_flash = {
+	.name		= "physmap-flash",
+	.id		= -1,
+	.num_resources	= 1,
+	.resource	= (struct resource[]) {
+		{
+			.start		= 0x00000000,
+			.end		= 2*1024*1024 - 1,
+			.flags		= IORESOURCE_MEM,
+		}
+	},
+	.dev.platform_data	= &(struct physmap_flash_data) {
+		.width		= 2,
+		.set_vpp	= NULL,
+		.nr_parts	= 2,
+		.parts		=  (struct mtd_partition []) {
+			{
+				.name = "NOR U-boot",
+				.size = 0x00040000,
+				.offset = 0x00000000,
+			}, {
+				.name = "NOR Empty",
+				.size = MTDPART_SIZ_FULL,
+				.offset = MTDPART_OFS_NXTBLK,
+			}
+		},
+	},
+};
 
 /* NAND Flash */
 struct stm_nand_bank_data hdk7105_nand_flash = {
@@ -262,11 +290,11 @@ struct stm_nand_bank_data hdk7105_nand_flash = {
 	 	{
 		.name	= "uImage",
 		.offset	= 0,
-		.size 	= 0x00800000 //1M  //uboot boot mode
+		.size 	= 0x00300000 //1M  //uboot boot mode
 		},
 		{
 		.name	= "RootFS",
-		.offset	= 0x00800000,
+		.offset	= 0x00300000,
 		.size	= MTDPART_SIZ_FULL 
 		}
 	},
@@ -287,6 +315,7 @@ struct stm_nand_bank_data hdk7105_nand_flash = {
 
 static struct platform_device *hdk7105_devices[] __initdata = {
 	&hdk7105_leds,
+	&hdk7105_nor_flash
 };
 
 static int __init hdk7105_device_init(void)
@@ -371,10 +400,6 @@ static int __init hdk7105_device_init(void)
 
 	gpio_request(HDK7105_PIO_PHY_RESET, "eth_phy_reset");
 	gpio_direction_output(HDK7105_PIO_PHY_RESET, 1);
-
-
-	/* M.Schenk 2012.05.21 get PHY IRQ to work */
-	set_irq_type(ILC_EXT_IRQ(6), IRQ_TYPE_LEVEL_LOW);
 	
 
 	stx7105_configure_ethernet(0, &(struct stx7105_ethernet_config) {
@@ -391,8 +416,8 @@ static int __init hdk7105_device_init(void)
 			.tx_enabled = 0,
 			.tx_od_enabled = 0, });
 
-	//gpio_request(HDK7105_GPIO_FLASH_WP, "FLASH_WP");
-	//gpio_direction_output(HDK7105_GPIO_FLASH_WP, 1);
+	gpio_request(HDK7105_GPIO_FLASH_WP, "FLASH_WP");
+	gpio_direction_output(HDK7105_GPIO_FLASH_WP, 1);
 
 	stx7105_configure_nand(&(struct stm_nand_config) {
 			.driver = stm_nand_flex,
