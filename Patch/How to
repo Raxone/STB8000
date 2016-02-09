@@ -1,4 +1,6 @@
-Download git clone https://github.com/Duckbox-Developers/StartHere.git put Patch/linux-sh4-ufs913_setup_stm24_0217.patch and linux-sh4-2.6.32.61_0217_ufs913.config to ~/StartHere/cdk/Patches overwrite file.
+Download git clone https://github.com/Duckbox-Developers/StartHere.git 
+put Patch/linux-sh4-ufs913_setup_stm24_0217.patch and linux-sh4-2.6.32.61_0217_ufs913.config to 
+~/StartHere/cdk/Patches overwrite file.
 In ~/StartHere/driver/avs/avs_core.c change "0x4b" to "0x4a" what is address of STV6419_I2C_ADDRESS.
 cd ~/StartHere/cdk
 sudo ./prepare4cdk.sh to install dependency.
