@@ -1,8 +1,0 @@
-After update u-boot.bin run comand 
-STB8000>mtdparts default
-STB8000>save
-and 
-STB8000>setenv update_rootfs "tftp $load_addr rootfs.img; nand erase nand0,1 ; nand write $load_addr nand0,1 0x4400000"
-STB8000>setenv bootargs "console=ttyAS0,115200 root=/dev/mtdblock1 rw rootfstype=jffs2 init=/bin/devinit nwhwconf=device:eth0,hwaddr:$ethaddr ip=$ipaddr:$serverip:$gatewayip:$netmask:Enigma2:eth0:off coprocessor_mem=4m@0x40000000,4m@0x40400000 bigphysarea=6144"
-STB8000>setenv bootcmd "nboot $load_addr nand0,0; bootm"
-STB8000>save
