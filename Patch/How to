@@ -13,7 +13,7 @@ N or enter
 1
 1
 make crosstool driver -j4  (-jx x is number of CPU cores use for build)
-After build you got uImage u-boot kernel and drivers for STB.
+After build you got uImage kernel and drivers for STB.
 
 P.S
 
